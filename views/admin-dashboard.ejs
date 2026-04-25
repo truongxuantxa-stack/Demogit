@@ -1,0 +1,123 @@
+<%- include('partials/header') %>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Quản Lý Yêu Cầu Giấy Giới Thiệu</h3>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <% if (requests.length === 0) { %>
+                    <p class="text-center text-muted my-4">Chưa có yêu cầu nào trong hệ thống.</p>
+                <% } else { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Sinh viên</th>
+                                    <th>Loại giấy</th>
+                                    <th>Nơi nhận</th>
+                                    <th>Nội dung</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% requests.forEach(function(req) { %>
+                                    <tr>
+                                        <td>#<%= req.id %></td>
+                                        <td><strong><%= req.student_name %></strong></td>
+                                        <td><%= req.type %></td>
+                                        <td><%= req.receiver %></td>
+                                        <td title="<%= req.content %>">
+                                            <%= req.content.length > 30 ? req.content.substring(0, 30) + '...' : req.content %>
+                                        </td>
+                                        <td><%= new Date(req.created_at).toLocaleDateString('vi-VN') %></td>
+                                        <td>
+                                            <% if (req.status === 'pending') { %>
+                                                <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                            <% } else if (req.status === 'approved') { %>
+                                                <span class="badge bg-success">Đã duyệt</span>
+                                                <div class="mt-1"><a href="<%= req.pdf_url %>" target="_blank" style="font-size: 0.8rem;">Xem PDF</a></div>
+                                            <% } else { %>
+                                                <span class="badge bg-danger">Từ chối</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (req.status === 'pending') { %>
+                                                <button class="btn btn-sm btn-success me-1 btn-action" data-id="<%= req.id %>" data-action="approve">Duyệt</button>
+                                                <button class="btn btn-sm btn-danger btn-action" data-id="<%= req.id %>" data-action="reject">Từ chối</button>
+                                            <% } else { %>
+                                                <span class="text-muted">-</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.btn-action');
+
+        const triggerPdfDownload = (blob, filename) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        };
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = e.target.getAttribute('data-id');
+                const action = e.target.getAttribute('data-action');
+                const actionText = action === 'approve' ? 'duyệt' : 'từ chối';
+                
+                if (!confirm(`Bạn có chắc chắn muốn ${actionText} yêu cầu #${id}?`)) return;
+
+                try {
+                    const res = await fetch(`/admin/requests/${id}/${action}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (res.ok) {
+                        if (action === 'approve') {
+                            const data = await res.json();
+                            if (data.pdfUrl) {
+                                window.open(data.pdfUrl, '_blank');
+                            }
+                        } else {
+                            await res.json();
+                        }
+
+                        alert(`Yêu cầu đã được ${actionText} thành công.`);
+                        window.location.reload();
+                    } else {
+                        const data = await res.json();
+                        alert(data.message || 'Có lỗi xảy ra');
+                    }
+                } catch (err) {
+                    alert('Lỗi kết nối server');
+                }
+            });
+        });
+    });
+</script>
+
+<%- include('partials/footer') %>

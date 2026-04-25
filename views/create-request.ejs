@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4>Tạo Yêu Cầu Giấy Giới Thiệu</h4>
+            </div>
+            <div class="card-body">
+                <% if (error) { %>
+                    <div class="alert alert-danger"><%= error %></div>
+                <% } %>
+
+                <form action="/requests" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Loại giấy giới thiệu</label>
+                        <select name="type" class="form-select" required>
+                            <option value="">-- Chọn loại giấy --</option>
+                            <option value="Thực tập doanh nghiệp">Thực tập doanh nghiệp</option>
+                            <option value="Liên hệ công tác">Liên hệ công tác</option>
+                            <option value="Làm đề tài nghiên cứu">Làm đề tài nghiên cứu</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Nơi nhận (Công ty/Cơ quan)</label>
+                        <input type="text" name="receiver" class="form-control" placeholder="VD: Công ty Cổ phần FPT" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nội dung chi tiết</label>
+                        <textarea name="content" class="form-control" rows="4" placeholder="Nhập nội dung cần giới thiệu..." required></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="/dashboard" class="btn btn-secondary">Quay lại</a>
+                        <button type="submit" class="btn btn-primary">Gửi Yêu Cầu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
