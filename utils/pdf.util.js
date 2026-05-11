@@ -2,182 +2,232 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
 
+// ── Font resolution ──────────────────────────────────────────────────────────
 const FONT_REGULAR_CANDIDATES = [
     'C:/Windows/Fonts/times.ttf',
     'C:/Windows/Fonts/arial.ttf',
-    'C:/Windows/Fonts/tahoma.ttf',
     '/usr/share/fonts/truetype/msttcorefonts/Times_New_Roman.ttf',
-    '/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf'
+    '/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf',
 ];
-
 const FONT_BOLD_CANDIDATES = [
     'C:/Windows/Fonts/timesbd.ttf',
     'C:/Windows/Fonts/arialbd.ttf',
-    'C:/Windows/Fonts/tahomabd.ttf',
     '/usr/share/fonts/truetype/msttcorefonts/Times_New_Roman_Bold.ttf',
-    '/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf'
+    '/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf',
+];
+const FONT_ITALIC_CANDIDATES = [
+    'C:/Windows/Fonts/timesi.ttf',
+    'C:/Windows/Fonts/ariali.ttf',
+    '/usr/share/fonts/truetype/msttcorefonts/Times_New_Roman_Italic.ttf',
 ];
 
-function resolveFont(candidates) {
-    return candidates.find((f) => fs.existsSync(f)) || null;
+function resolveFont(list) {
+    return list.find((f) => fs.existsSync(f)) || null;
 }
 
+// ── Nội dung động theo từng loại giấy ───────────────────────────────────────
+function getTypeContent(type, studentName, receiver, content) {
+    const sv   = studentName || '............................';
+    const recv = receiver    || '............................';
+
+    const map = {
+        'Thực tập doanh nghiệp': {
+            opening:
+                'Nhằm giúp cho sinh viên trường có kiến thức thực tế, nâng cao trình độ chuyên môn ' +
+                'và học hỏi kinh nghiệm làm việc tại doanh nghiệp. ' +
+                'Nay Trường Đại học Xây dựng Hà Nội giới thiệu:',
+            viecViec: content || 'Thực tập tại đơn vị.',
+            closing:
+                `Kính mong ${recv} tạo điều kiện giúp đỡ cho sinh viên ${sv} ` +
+                'hoàn thành tốt đợt thực tập.',
+            bottomLabel: 'Ý KIẾN CỦA ĐƠN VỊ THỰC TẬP',
+        },
+        'Liên hệ công tác': {
+            opening:
+                'Nay Trường Đại học Xây dựng Hà Nội trân trọng giới thiệu sinh viên của Trường ' +
+                'đến Quý cơ quan để liên hệ công tác:',
+            viecViec: content || 'Liên hệ công tác tại đơn vị.',
+            closing:
+                `Kính mong ${recv} tạo điều kiện giúp đỡ cho sinh viên ${sv} ` +
+                'hoàn thành tốt nhiệm vụ công tác.',
+            bottomLabel: 'Ý KIẾN CỦA ĐƠN VỊ TIẾP NHẬN',
+        },
+        'Làm đề tài nghiên cứu': {
+            opening:
+                'Nhằm giúp cho sinh viên trường có điều kiện thu thập tài liệu thực tế, ' +
+                'phục vụ nghiên cứu và làm đề tài tốt nghiệp khóa học. ' +
+                'Nay Trường Đại học Xây dựng Hà Nội giới thiệu:',
+            viecViec: content || 'Thu thập tài liệu, nghiên cứu và hoàn thành đề tài tốt nghiệp.',
+            closing:
+                `Kính mong ${recv} tạo điều kiện giúp đỡ cho sinh viên ${sv} ` +
+                'hoàn thành tốt đề tài nghiên cứu.',
+            bottomLabel: 'Ý KIẾN CỦA ĐƠN VỊ TIẾP NHẬN',
+        },
+    };
+
+    return map[type] || map['Thực tập doanh nghiệp'];
+}
+
+// ── PdfUtil ──────────────────────────────────────────────────────────────────
 class PdfUtil {
     static async generateRecommendationLetter(requestData) {
         return new Promise((resolve, reject) => {
             try {
-                // ── Hằng số bố cục ──────────────────────────────────────────
-                const PAGE_W  = 595.28;
-                const MARGIN  = 55;
-                const CONT_W  = PAGE_W - MARGIN * 2;          // ~485
+                // Bố cục trang
+                const MARGIN = 60;
+                const PAGE_W = 595.28;
+                const CONT_W = PAGE_W - MARGIN * 2;   // ~475pt
 
+                // Cột header
                 const L_X = MARGIN;
-                const L_W = 220;
-                const R_X = MARGIN + L_W + 20;
-                const R_W = CONT_W - L_W - 20;
+                const L_W = 215;
+                const R_X = MARGIN + L_W + 15;
+                const R_W = CONT_W - L_W - 15;
 
-                const doc = new PDFDocument({ margin: MARGIN, size: 'A4' });
+                const doc      = new PDFDocument({ margin: MARGIN, size: 'A4', autoFirstPage: true });
                 const fileName = `recommendation_${requestData.id}_${Date.now()}.pdf`;
                 const filePath = path.join(__dirname, '../public/pdfs', fileName);
 
-                const fontReg  = resolveFont(FONT_REGULAR_CANDIDATES);
-                const fontBold = resolveFont(FONT_BOLD_CANDIDATES);
-                if (fontReg)  doc.registerFont('Reg',  fontReg);
-                if (fontBold) doc.registerFont('Bold', fontBold);
+                const fontReg    = resolveFont(FONT_REGULAR_CANDIDATES);
+                const fontBold   = resolveFont(FONT_BOLD_CANDIDATES);
+                const fontItalic = resolveFont(FONT_ITALIC_CANDIDATES);
+                if (fontReg)    doc.registerFont('Reg',    fontReg);
+                if (fontBold)   doc.registerFont('Bold',   fontBold);
+                if (fontItalic) doc.registerFont('Italic', fontItalic);
 
-                const R = () => doc.font(fontReg  ? 'Reg'  : 'Helvetica');
-                const B = () => doc.font(fontBold ? 'Bold' : 'Helvetica-Bold');
+                const R  = (sz = 12) => doc.font(fontReg    ? 'Reg'    : 'Helvetica').fontSize(sz);
+                const B  = (sz = 12) => doc.font(fontBold   ? 'Bold'   : 'Helvetica-Bold').fontSize(sz);
+                const It = (sz = 10) => doc.font(fontItalic ? 'Italic' : 'Helvetica-Oblique').fontSize(sz);
 
                 const writeStream = fs.createWriteStream(filePath);
                 doc.pipe(writeStream);
 
+                // Ngày tháng năm hiện tại
                 const d     = new Date();
                 const ngay  = d.getDate();
                 const thang = d.getMonth() + 1;
                 const nam   = d.getFullYear();
 
+                // Ngày hết hạn (30 ngày)
+                const exp = new Date(d);
+                exp.setDate(exp.getDate() + 30);
+                const expiryStr = `${exp.getDate()}/${exp.getMonth() + 1}/${exp.getFullYear()}`;
+
+                // Nội dung động
+                const tc = getTypeContent(
+                    requestData.type,
+                    requestData.student_name,
+                    requestData.receiver,
+                    requestData.content
+                );
+
                 // ── HEADER 2 CỘT ─────────────────────────────────────────────
                 let lY = MARGIN;
 
                 // Cột trái
-                B();
-                doc.fontSize(10).text('BỘ GIÁO DỤC VÀ ĐÀO TẠO', L_X, lY, { width: L_W, align: 'center' });
+                B(10); doc.text('BỘ GIÁO DỤC VÀ ĐÀO TẠO', L_X, lY, { width: L_W, align: 'center' });
                 lY = doc.y + 1;
-                B();
-                doc.fontSize(10).text('TRƯỜNG ĐẠI HỌC XÂY DỰNG HÀ NỘI', L_X, lY, { width: L_W, align: 'center' });
-                lY = doc.y + 2;
-                // Gạch dưới tên trường
-                doc.moveTo(L_X + 15, lY).lineTo(L_X + L_W - 15, lY).lineWidth(0.8).strokeColor('#000').stroke();
-                lY += 5;
-                R();
-                doc.fontSize(10).text('Số:  ......./ĐHXD', L_X, lY, { width: L_W, align: 'center' });
-                const leftEndY = doc.y;
+                R(10); doc.text('Trường Đại học Xây dựng Hà Nội', L_X, lY, { width: L_W, align: 'center' });
+                lY = doc.y + 1;
+                doc.moveTo(L_X + 10, lY).lineTo(L_X + L_W - 10, lY).lineWidth(0.7).stroke();
+                const leftEndY = lY + 3;
 
                 // Cột phải
                 let rY = MARGIN;
-                B();
-                doc.fontSize(10).text('CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM', R_X, rY, { width: R_W, align: 'center' });
+                B(10); doc.text('CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM', R_X, rY, { width: R_W, align: 'center' });
                 rY = doc.y + 1;
-                R();
-                doc.fontSize(11).text('Độc lập - Tự do - Hạnh phúc', R_X, rY, { width: R_W, align: 'center' });
-                rY = doc.y + 2;
-                // Gạch dưới tiêu ngữ
-                doc.moveTo(R_X + 20, rY).lineTo(R_X + R_W - 20, rY).lineWidth(0.8).strokeColor('#000').stroke();
-                rY += 5;
-                R();
-                doc.fontSize(10).text(
-                    `Hà Nội, ngày ${ngay} tháng ${thang} năm ${nam}`,
-                    R_X, rY, { width: R_W, align: 'center' }
-                );
-                const rightEndY = doc.y;
+                R(10); doc.text('Độc lập – Tự do – Hạnh phúc', R_X, rY, { width: R_W, align: 'center' });
+                rY = doc.y + 1;
+                doc.moveTo(R_X + 25, rY).lineTo(R_X + R_W - 25, rY).lineWidth(0.7).stroke();
+                const rightEndY = rY + 3;
 
-                // Vị trí Y tiếp theo sau header
-                let curY = Math.max(leftEndY, rightEndY) + 18;
+                // Dòng số và ngày
+                let curY = Math.max(leftEndY, rightEndY) + 10;
+                R(10); doc.text('Số: ......./GGT-ĐHXD', L_X, curY, { width: L_W });
+                R(10); doc.text(`Hà Nội, ngày ${ngay} tháng ${thang} năm ${nam}`, R_X, curY, { width: R_W, align: 'center' });
 
                 // ── TIÊU ĐỀ ──────────────────────────────────────────────────
-                B();
-                doc.fontSize(15).text('GIẤY GIỚI THIỆU', MARGIN, curY, { width: CONT_W, align: 'center' });
+                curY = Math.max(doc.y, curY) + 18;
+                B(15); doc.text('GIẤY GIỚI THIỆU', MARGIN, curY, { width: CONT_W, align: 'center', underline: false });
+                // Vẽ gạch chân thủ công để tránh PDFKit rò rỉ trạng thái underline
+                const titleTextW = doc.widthOfString('GIẤY GIỚI THIỆU', { fontSize: 15 });
+                const titleLineX = MARGIN + (CONT_W - titleTextW) / 2;
+                doc.moveTo(titleLineX, doc.y).lineTo(titleLineX + titleTextW, doc.y).lineWidth(0.7).stroke();
                 curY = doc.y + 14;
 
-                // ── NỘI DUNG ─────────────────────────────────────────────────
-                R();
-                doc.fontSize(12);
-
-                // Kính gửi
-                doc.text('Kính gửi: ', L_X, curY, { continued: true });
-                B();
-                doc.text(requestData.receiver || '...........................................................................');
-                curY = doc.y + 8;
-
-                // Đoạn giới thiệu
-                R();
-                doc.fontSize(12).text(
-                    'Trường Đại học Xây dựng Hà Nội trân trọng giới thiệu đến Quý cơ quan sinh viên của Trường ' +
-                    'đang thực hiện yêu cầu dưới đây. Nay Trường giới thiệu sinh viên đến Quý cơ quan, kính mong ' +
-                    'Quý cơ quan tạo điều kiện giúp đỡ:',
-                    L_X, curY, { width: CONT_W, align: 'justify', lineGap: 3 }
-                );
-                curY = doc.y + 10;
-
-                // ── CÁC DÒNG THÔNG TIN có gạch chân ─────────────────────────
-                const fieldLine = (label, value) => {
-                    B();
-                    doc.fontSize(12).text(label + ': ', L_X, curY, { continued: true, width: CONT_W });
-                    R();
-                    doc.text(value || '', { underline: true });
-                    curY = doc.y + 5;
+                // ── HELPER FORMAT FIELD ──────────────────────────────────────
+                const formatField = (val, dots) => {
+                    if (!val) return dots;
+                    // Loại bỏ các dấu chấm vô tình bị dính ở cuối chuỗi
+                    return String(val).replace(/\.+$/, '').trim();
                 };
 
-                fieldLine('Họ và tên sinh viên', requestData.student_name);
-                fieldLine('Loại giấy yêu cầu',   requestData.type);
+                // ── KÍNH GỬI ─────────────────────────────────────────────────
+                R(12); doc.text('Kính gửi: ', MARGIN + 90, curY, { continued: true, underline: false });
+                B(12); doc.text(formatField(requestData.receiver, '......................................................................'), { underline: false });
+                curY = doc.y + 8;
 
-                // Nội dung
-                B();
-                doc.fontSize(12).text('Nội dung:', L_X, curY);
-                curY = doc.y + 3;
-                R();
-                doc.fontSize(12).text(requestData.content || '...', L_X, curY, {
-                    width: CONT_W, align: 'justify', lineGap: 4
-                });
-                curY = doc.y + 12;
+                // ── ĐOẠN MỞ ĐẦU (thay đổi theo loại giấy) ──────────────────
+                R(12); doc.text(tc.opening, L_X, curY, { width: CONT_W, align: 'justify', lineGap: 3, underline: false });
+                curY = doc.y + 8;
 
-                // Câu kết
-                R();
-                doc.fontSize(12).text(
-                    'Kính mong Quý cơ quan tạo điều kiện giúp đỡ sinh viên hoàn thành tốt công việc. ' +
-                    'Trân trọng cảm ơn!',
-                    L_X, curY, { width: CONT_W, align: 'justify', lineGap: 3 }
-                );
-                curY = doc.y + 22;
+                // ── DÒNG THÔNG TIN SINH VIÊN ─────────────────────────────────
+                // "Sinh viên: [tên]    MSSV: .......    Lớp: .......    Khóa: ......."
+                B(12); doc.text('Sinh viên: ', L_X, curY, { continued: true, underline: false });
+                R(12); doc.text(formatField(requestData.student_name, '..........................'), { continued: true, underline: false });
+                B(12); doc.text('   MSSV: ', { continued: true, underline: false });
+                R(12); doc.text('..............', { continued: true, underline: false });
+                B(12); doc.text('   Lớp: ', { continued: true, underline: false });
+                R(12); doc.text('..............', { continued: true, underline: false });
+                B(12); doc.text('   Khóa: ', { continued: true, underline: false });
+                R(12); doc.text('..............', { underline: false });
+                curY = doc.y + 5;
 
-                // ── CHỮ KÝ 2 CỘT ─────────────────────────────────────────────
-                const sigLX = L_X;
+                // "Được giới thiệu đến: [receiver]"
+                B(12); doc.text('Được giới thiệu đến: ', L_X, curY, { continued: true, underline: false });
+                R(12); doc.text(formatField(requestData.receiver, '...................................................................'), { underline: false });
+                curY = doc.y + 5;
+
+                // "Địa chỉ: ..."
+                B(12); doc.text('Địa chỉ: ', L_X, curY, { continued: true, underline: false });
+                R(12); doc.text('...................................................................................................', { underline: false });
+                curY = doc.y + 5;
+
+                // "Về việc: ..."
+                B(12); doc.text('Về việc: ', L_X, curY, { continued: true, underline: false });
+                R(12); doc.text(formatField(tc.viecViec, '...................................................................'), { width: CONT_W - 75, underline: false });
+                curY = doc.y + 14;
+
+                // ── CÂU KẾT ──────────────────────────────────────────────────
+                R(12); doc.text(tc.closing, L_X, curY, { width: CONT_W, align: 'justify', lineGap: 3 });
+                curY = doc.y + 20;
+
+                // ── VÙNG CHỮ KÝ 2 CỘT ────────────────────────────────────────
                 const sigLW = 210;
-                const sigRX = L_X + sigLW + 30;
-                const sigRW = CONT_W - sigLW - 30;
+                const sigRX = L_X + sigLW + 20;
+                const sigRW = CONT_W - sigLW - 20;
 
-                // Cột trái: Ý kiến đơn vị tiếp nhận
-                B();
-                doc.fontSize(11).text('Ý KIẾN CỦA ĐƠN VỊ TIẾP NHẬN', sigLX, curY, { width: sigLW, align: 'center' });
-                R();
-                doc.fontSize(10).text('(Ký tên, đóng dấu)', sigLX, doc.y + 2, { width: sigLW, align: 'center' });
+                // Trái: Ngày hết hạn (in nghiêng)
+                It(10); doc.text(`Giấy này có giá trị đến hết ngày ${expiryStr}`, L_X, curY, { width: sigLW, align: 'center' });
 
-                // Cột phải: Hiệu trưởng
-                B();
-                doc.fontSize(11).text('T.HIỆU TRƯỞNG', sigRX, curY, { width: sigRW, align: 'center' });
-                doc.fontSize(11).text('PHÒNG ĐÀO TẠO', sigRX, doc.y + 1, { width: sigRW, align: 'center' });
-                R();
-                doc.fontSize(10).text('(Ký tên, đóng dấu)', sigRX, doc.y + 2, { width: sigRW, align: 'center' });
+                // Phải: TL. Hiệu trưởng
+                B(11); doc.text('TL. HIỆU TRƯỞNG', sigRX, curY, { width: sigRW, align: 'center' });
+                B(11); doc.text('TRƯỞNG KHOA', sigRX, doc.y + 1, { width: sigRW, align: 'center' });
+                R(10); doc.text('(Ký tên và đóng dấu)', sigRX, doc.y + 2, { width: sigRW, align: 'center' });
 
-                // Khoảng trống cho chữ ký tay
-                const afterSigY = doc.y + 55;
+                curY = doc.y + 60;
 
-                // Tên người ký (phải)
-                B();
-                doc.fontSize(12).text('(Đã ký)', sigRX, afterSigY, { width: sigRW, align: 'center' });
+                // ── Ý KIẾN ĐƠN VỊ (thay đổi label theo loại giấy) ───────────
+                B(11); doc.text(tc.bottomLabel, L_X, curY, { width: sigLW });
+                curY = doc.y + 12;
+                R(11);
+                doc.text('................................................................................', L_X, curY);
+                curY = doc.y + 10;
+                doc.text('................................................................................', L_X, curY);
+                curY = doc.y + 8;
+                It(10); doc.text('(Ký tên và đóng dấu)', L_X, curY, { width: sigLW, align: 'center' });
 
                 doc.end();
-
                 writeStream.on('close', () => resolve(`/pdfs/${fileName}`));
                 writeStream.on('error',  (err) => reject(err));
 
