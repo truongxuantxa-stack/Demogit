@@ -39,8 +39,8 @@
 4. **Khởi động Server:**
    Dùng lệnh sau để chạy:
    ```bash
-   node server.js
-   ```
+  
+   ``` node server.js
 
 5. **Sử dụng hệ thống:**
    - Truy cập vào: `http://localhost:3000`
