@@ -8,11 +8,11 @@ class RequestController {
             const { type, content, receiver } = req.body;
             const userId = req.user.id; // from auth middleware
 
-            if (!type || !content || !receiver) {
+            if (!type || !content || !content.trim() || !receiver || !receiver.trim()) {
                 if (req.accepts('html')) {
-                    return res.render('create-request', { user: req.user, error: 'Vui lòng điền đủ thông tin' });
+                    return res.render('create-request', { user: req.user, error: 'Vui lòng điền đầy đủ thông tin (không để trống hoặc chỉ nhập dấu cách).' });
                 }
-                return res.status(400).json({ message: 'All fields are required' });
+                return res.status(400).json({ message: 'All fields are required and cannot be empty' });
             }
 
             await requestService.createRequest(userId, type, content, receiver);

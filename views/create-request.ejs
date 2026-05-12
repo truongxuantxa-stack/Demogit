@@ -14,7 +14,7 @@
                 <form action="/requests" method="POST">
                     <div class="mb-3">
                         <label class="form-label">Loại giấy giới thiệu</label>
-                        <select name="type" class="form-select" required>
+                        <select name="type" id="requestType" class="form-select" required>
                             <option value="">-- Chọn loại giấy --</option>
                             <option value="Thực tập doanh nghiệp">Thực tập doanh nghiệp</option>
                             <option value="Liên hệ công tác">Liên hệ công tác</option>
@@ -28,8 +28,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Nội dung chi tiết</label>
-                        <textarea name="content" class="form-control" rows="4" placeholder="Nhập nội dung cần giới thiệu..." required></textarea>
+                        <label class="form-label">Lý do / Mục đích xin giấy</label>
+                        <textarea name="content" id="requestContent" class="form-control" rows="4" placeholder="Nhập nội dung cần giới thiệu..." required></textarea>
                     </div>
 
                     <div class="d-flex justify-content-between">
@@ -41,5 +41,27 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('requestType');
+        const contentTextarea = document.getElementById('requestContent');
+
+        const placeholders = {
+            'Thực tập doanh nghiệp': 'Ví dụ: Thực tập doanh nghiệp và thu thập số liệu làm đồ án khóa học...',
+            'Liên hệ công tác': 'Ví dụ: Liên hệ công tác, quan sát và tìm hiểu quy trình làm việc thực tế tại cơ quan...',
+            'Làm đề tài nghiên cứu': 'Ví dụ: Thu thập số liệu và tìm hiểu thực tế phục vụ đề tài nghiên cứu...'
+        };
+
+        typeSelect.addEventListener('change', function() {
+            const selectedType = this.value;
+            if (placeholders[selectedType]) {
+                contentTextarea.placeholder = placeholders[selectedType];
+            } else {
+                contentTextarea.placeholder = 'Nhập nội dung cần giới thiệu...';
+            }
+        });
+    });
+</script>
 
 <%- include('partials/footer') %>
