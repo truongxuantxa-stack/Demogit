@@ -19,7 +19,7 @@
                                     <th>Sinh viên</th>
                                     <th>Loại giấy</th>
                                     <th>Nơi nhận</th>
-                                    <th>Nội dung</th>
+                                    <th>Lý do/Mục đích</th>
                                     <th>Ngày tạo</th>
                                     <th>Trạng thái</th>
                                     <th>Hành động</th>
@@ -32,9 +32,7 @@
                                         <td><strong><%= req.student_name %></strong></td>
                                         <td><%= req.type %></td>
                                         <td><%= req.receiver %></td>
-                                        <td title="<%= req.content %>">
-                                            <%= req.content.length > 30 ? req.content.substring(0, 30) + '...' : req.content %>
-                                        </td>
+                                        <td style="max-width: 300px; white-space: pre-line;"><%= req.content %></td>
                                         <td><%= new Date(req.created_at).toLocaleDateString('vi-VN') %></td>
                                         <td>
                                             <% if (req.status === 'pending') { %>
