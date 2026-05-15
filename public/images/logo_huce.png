@@ -1,0 +1,123 @@
+<html>
+<head>
+    <!-- Basic Page Needs =====================================-->
+    <meta charset="utf-8">
+
+    <!-- Mobile Specific Metas ================================-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Site Title- -->
+    <title>Đại học Xây dựng Hà Nội</title>
+    <!-- Favicon and Touch Icons -->
+    <link href="/theme1/images/logo/logo-dhxd.PNG" rel="shortcut icon" type="image/png">
+    <link href="/theme1/images/logo/logo-dhxd.PNG" rel="apple-touch-icon">
+    <link href="/theme1/images/logo/logo-dhxd.PNG" rel="apple-touch-icon" sizes="72x72">
+    <link href="/theme1/images/logo/logo-dhxd.PNG" rel="apple-touch-icon" sizes="114x114">
+    <link href="/theme1/images/logo/logo-dhxd.PNG" rel="apple-touch-icon" sizes="144x144">
+    <!-- CSS
+    ==================================================== -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/theme1/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/theme1/css/font-awesome.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/theme1/css/animate.css">
+
+    <!-- IcoFonts -->
+    <link rel="stylesheet" href="/theme1/css/icofonts.css">
+
+    <!-- Owl Carousel -->
+    <link rel="stylesheet" href="/theme1/css/owlcarousel.min.css">
+
+    <!-- slick -->
+    <link rel="stylesheet" href="/theme1/css/slick.css">
+
+    <!-- limitpara -->
+    <link rel="stylesheet" href="/theme1/css/limitpara.css">
+
+    <!-- navigation -->
+    <link rel="stylesheet" href="/theme1/css/navigation.css">
+
+    <!-- magnific popup -->
+    <link rel="stylesheet" href="/theme1/css/magnific-popup.css">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="/theme1/css/style.css">
+
+    <link rel="stylesheet" href="/theme1/css/nuce-edited.css">
+
+    <link rel="stylesheet" href="/theme1/css/color-layout.css">
+    <!-- Style -->
+    <link rel="stylesheet" href="/theme1/css/colors/color-0.css">
+
+    <!-- Responsive -->
+    <link rel="stylesheet" href="/theme1/css/responsive.css">
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body class="body-color">
+    <section class="block-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="error-page text-center col ts-grid-box">
+                        <div class="error-code">
+                            <h2>
+                                <strong>404</strong>
+                            </h2>
+                        </div>
+                        <div class="error-message">
+                            <h3>Xin l&#x1ED7;i, trang b&#x1EA1;n t&#xEC;m ki&#x1EBF;m kh&#xF4;ng t&#x1ED3;n t&#x1EA1;i!</h3>
+                        </div>
+                        <div class="error-body">
+                            <!-- <h4>The Link You Followed Probably Broken or the page has been removed.</h4> -->
+                            <a href="/" class="btn btn-primary" style="background: #001e42">Quay v&#x1EC1; Trang ch&#x1EE7;!</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Row end -->
+        </div>
+        <!-- Container end -->
+    </section>
+
+    <!-- javaScript Files
+    =============================================================================-->
+    <!-- initialize jQuery Library -->
+    <script src="/theme1/js/jquery.min.js"></script>
+    <!-- navigation JS -->
+    <script src="/theme1/js/navigation.js"></script>
+    <!-- Popper JS -->
+    <script src="/theme1/js/popper.min.js"></script>
+
+    <!-- magnific popup JS -->
+    <script src="/theme1/js/jquery.magnific-popup.min.js"></script>
+
+
+
+    <!-- Bootstrap jQuery -->
+    <script src="/theme1/js/bootstrap.min.js"></script>
+    <!-- Owl Carousel -->
+
+    <script src="/theme1/js/owl-carousel.2.3.0.min.js"></script>
+    <!-- slick -->
+    <script src="/theme1/js/slick.min.js"></script>
+
+    <!-- smooth scroling -->
+    <script src="/theme1/js/smoothscroll.js"></script>
+
+    <script src="/theme1/js/main.js"></script>
+</body>
+</html>

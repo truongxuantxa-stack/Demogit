@@ -3,37 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Xin Giấy Giới Thiệu</title>
+    <title>Hệ Thống Xin Giấy Giới Thiệu Sinh Viên</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .navbar { margin-bottom: 20px; }
+        body { 
+            background-color: #f8f9fa; 
+            font-family: 'Roboto', sans-serif;
+        }
+        /* Top Header */
+        .top-header {
+            background-color: #ffffff;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .huce-logo {
+            height: 70px;
+            margin-right: 15px;
+        }
+        .school-name-vi {
+            color: #103f91;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .school-name-en {
+            color: #103f91;
+            font-weight: 500;
+            font-size: 1rem;
+            margin: 0;
+        }
+        .school-slogan {
+            color: #c32128;
+            font-style: italic;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .contact-info {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 20px;
+            height: 100%;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .contact-icon {
+            color: #f59d1a;
+            font-size: 1.5rem;
+        }
+        .contact-text-label {
+            color: #103f91;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+        .contact-text-val {
+            color: #555;
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+
+        /* Navigation Tabs */
+        .custom-nav {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .nav-tabs {
+            border-bottom: none;
+            justify-content: center;
+        }
+        .nav-tabs .nav-link {
+            border: none;
+            color: #555;
+            font-weight: 500;
+            padding: 15px 30px;
+            text-transform: uppercase;
+            border-bottom: 3px solid transparent;
+            border-radius: 0;
+        }
+        .nav-tabs .nav-link:hover, .nav-tabs .nav-link.active {
+            color: #103f91;
+            border-bottom: 3px solid #f59d1a;
+            background-color: transparent;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            height: 250px;
+            margin-bottom: 40px;
+        }
+        .banner-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            text-align: center;
+            width: 100%;
+        }
+        .banner-title {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin: 0;
+        }
+        
+        /* User Profile in Banner */
+        .user-profile-badge {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 10px 20px 10px 10px;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid #f59d1a;
+            background-color: #eee;
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-name {
+            font-weight: 600;
+            color: #103f91;
+            margin: 0;
+            line-height: 1.2;
+        }
+        .user-role {
+            font-size: 0.8rem;
+            color: #666;
+            margin: 0;
+        }
+        .logout-btn {
+            margin-left: 15px;
+            font-size: 0.85rem;
+            color: #dc3545;
+            text-decoration: none;
+            font-weight: 500;
+            border-left: 1px solid #eee;
+            padding-left: 15px;
+        }
+        .logout-btn:hover {
+            text-decoration: underline;
+            color: #b02a37;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Top Header -->
+    <div class="top-header d-none d-md-block">
         <div class="container">
-            <a class="navbar-brand" href="#">Hệ Thống Xin Giấy Giới Thiệu</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <% if (typeof user !== 'undefined' && user) { %>
+            <div class="row align-items-center">
+                <div class="col-md-7 d-flex align-items-center">
+                    <img src="/images/logo_huce.png" alt="HUCE Logo" class="huce-logo" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=HUCE&background=103f91&color=fff&font-size=0.33&bold=true&rounded=true';">
+                    <div>
+                        <h1 class="school-name-vi">TRƯỜNG ĐẠI HỌC XÂY DỰNG HÀ NỘI</h1>
+                        <h2 class="school-name-en">Hanoi University of Civil Engineering</h2>
+                        <p class="school-slogan">&mdash; Cơ sở giáo dục đại học đạt chuẩn kiểm định quốc tế</p>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fa-solid fa-phone-volume contact-icon"></i>
+                            <div>
+                                <p class="contact-text-label">Hotline</p>
+                                <p class="contact-text-val">0243 869 7004</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fa-solid fa-envelope-open-text contact-icon"></i>
+                            <div>
+                                <p class="contact-text-label">Email</p>
+                                <p class="contact-text-val">ctsv@huce.edu.vn</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="custom-nav">
+        <div class="container">
+            <ul class="nav nav-tabs" id="main-nav-tabs">
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <% if (user.role === 'admin') { %>
                         <li class="nav-item">
-                            <span class="nav-link text-light">Xin chào, <%= user.full_name %> - Mã số: <%= user.username %></span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/logout">Đăng xuất</a>
+                            <a class="nav-link" href="/admin/dashboard"><i class="fa-solid fa-list-check me-1"></i> QUẢN LÝ YÊU CẦU</a>
                         </li>
                     <% } else { %>
                         <li class="nav-item">
-                            <a class="nav-link" href="/login">Đăng nhập</a>
+                            <a class="nav-link" href="/create-request"><i class="fa-solid fa-file-circle-plus me-1"></i> TẠO YÊU CẦU MỚI</a>
                         </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="/register">Đăng ký</a>
-                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard"><i class="fa-solid fa-clock-rotate-left me-1"></i> LỊCH SỬ XIN GIẤY</a>
+                        </li>
                     <% } %>
-                </ul>
-            </div>
+                <% } else { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login"><i class="fa-solid fa-right-to-bracket me-1"></i> ĐĂNG NHẬP</a>
+                    </li>
+                <% } %>
+            </ul>
         </div>
-    </nav>
-    <div class="container">
+    </div>
+
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+            <h2 class="banner-title">HỆ THỐNG XIN GIẤY GIỚI THIỆU SINH VIÊN</h2>
+        </div>
+        
+        <% if (typeof user !== 'undefined' && user) { %>
+            <div class="container position-relative h-100">
+                <div class="user-profile-badge">
+                    <img src="https://ui-avatars.com/api/?name=<%= encodeURIComponent(user.full_name) %>&background=103f91&color=fff&bold=true" alt="Avatar" class="user-avatar">
+                    <div class="user-info">
+                        <p class="user-name"><%= user.full_name %></p>
+                        <p class="user-role"><%= user.role === 'admin' ? 'Cán bộ' : `MSSV: ${user.username}` %></p>
+                    </div>
+                    <a href="/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i> Thoát</a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Script to set active tab -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var currentPath = window.location.pathname;
+            var navLinks = document.querySelectorAll('#main-nav-tabs .nav-link');
+            navLinks.forEach(function(link) {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+
+    <!-- Main Content Container -->
+    <div class="container pb-5">
