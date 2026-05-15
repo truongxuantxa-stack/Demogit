@@ -149,10 +149,6 @@ class PdfUtil {
                 // ── TIÊU ĐỀ ──────────────────────────────────────────────────
                 curY = Math.max(doc.y, curY) + 18;
                 B(15); doc.text('GIẤY GIỚI THIỆU', MARGIN, curY, { width: CONT_W, align: 'center', underline: false });
-                // Vẽ gạch chân thủ công để tránh PDFKit rò rỉ trạng thái underline
-                const titleTextW = doc.widthOfString('GIẤY GIỚI THIỆU', { fontSize: 15 });
-                const titleLineX = MARGIN + (CONT_W - titleTextW) / 2;
-                doc.moveTo(titleLineX, doc.y).lineTo(titleLineX + titleTextW, doc.y).lineWidth(0.7).stroke();
                 curY = doc.y + 14;
 
                 // ── HELPER FORMAT FIELD ──────────────────────────────────────
