@@ -19,7 +19,7 @@ class RequestRepository {
 
     async findById(id) {
         const [rows] = await pool.query(
-            `SELECT r.*, u.full_name as student_name 
+            `SELECT r.*, u.full_name as student_name, u.username as student_id 
              FROM requests r 
              JOIN users u ON r.user_id = u.id 
              WHERE r.id = ?`,
@@ -30,7 +30,7 @@ class RequestRepository {
 
     async findAll() {
         const [rows] = await pool.query(
-            `SELECT r.*, u.full_name as student_name 
+            `SELECT r.*, u.full_name as student_name, u.username as student_id 
              FROM requests r 
              JOIN users u ON r.user_id = u.id 
              ORDER BY r.created_at DESC`

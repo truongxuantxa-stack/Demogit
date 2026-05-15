@@ -29,7 +29,10 @@
                                 <% requests.forEach(function(req) { %>
                                     <tr>
                                         <td>#<%= req.id %></td>
-                                        <td><strong><%= req.student_name %></strong></td>
+                                        <td>
+                                            <strong><%= req.student_name %></strong><br>
+                                            <small class="text-muted">Mã số: <%= req.student_id %></small>
+                                        </td>
                                         <td><%= req.type %></td>
                                         <td><%= req.receiver %></td>
                                         <td style="max-width: 300px; white-space: pre-line;"><%= req.content %></td>

@@ -11,9 +11,9 @@ router.get('/login', redirectIfAuthenticated, (req, res) => {
     res.render('login', { error: null, success: req.query.success });
 });
 
-router.get('/register', redirectIfAuthenticated, (req, res) => {
-    res.render('register', { error: null });
-});
+// router.get('/register', redirectIfAuthenticated, (req, res) => {
+//     res.render('register', { error: null });
+// });
 
 router.get('/dashboard', authenticate, authorize(['student']), requestController.getStudentRequests);
 
@@ -25,7 +25,7 @@ router.get('/admin/dashboard', authenticate, authorize(['admin']), requestContro
 
 
 // --- API Routes ---
-router.post('/register', authController.register);
+// router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 

@@ -165,7 +165,7 @@ describe('POST /login', () => {
 // TEST SUITE: POST /register
 // ═══════════════════════════════════════════════════════════════════════════════
 
-describe('POST /register', () => {
+describe.skip('POST /register', () => {
     let app;
 
     beforeAll(() => { app = buildApp(); });
