@@ -3,29 +3,6 @@ const authService = require('../services/auth.service');
 class AuthController {
     // API and View Render Logic
     
-    async register(req, res) {
-        try {
-            const { username, password, full_name } = req.body;
-            if (!username || !password || !full_name) {
-                if (req.accepts('html')) {
-                    return res.render('register', { error: 'Vui lòng nhập đủ thông tin' });
-                }
-                return res.status(400).json({ message: 'Username, password and full_name are required' });
-            }
-
-            await authService.register(username, password, full_name);
-            
-            if (req.accepts('html')) {
-                return res.redirect('/login?success=Đăng ký thành công, vui lòng đăng nhập');
-            }
-            res.status(201).json({ message: 'User registered successfully' });
-        } catch (error) {
-            if (req.accepts('html')) {
-                return res.render('register', { error: error.message });
-            }
-            res.status(400).json({ message: error.message });
-        }
-    }
 
     async login(req, res) {
         try {

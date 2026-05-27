@@ -1,100 +1,433 @@
 <%- include('partials/header') %>
 
-<div class="row mt-4">
-    <div class="col-md-12">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Quản Lý Yêu Cầu Giấy Giới Thiệu</h3>
-        </div>
-
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <% if (requests.length === 0) { %>
-                    <p class="text-center text-muted my-4">Chưa có yêu cầu nào trong hệ thống.</p>
-                <% } else { %>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Sinh viên</th>
-                                    <th>Loại giấy</th>
-                                    <th>Nơi nhận</th>
-                                    <th>Lý do/Mục đích</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Trạng thái</th>
-                                    <th>Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% requests.forEach(function(req) { %>
-                                    <tr>
-                                        <td>#<%= req.id %></td>
-                                        <td>
-                                            <strong><%= req.student_name %></strong><br>
-                                            <small class="text-muted">Mã số: <%= req.student_id %></small>
-                                        </td>
-                                        <td><%= req.type %></td>
-                                        <td><%= req.receiver %></td>
-                                        <td style="max-width: 300px; white-space: pre-line;"><%= req.content %></td>
-                                        <td><%= new Date(req.created_at).toLocaleDateString('vi-VN') %></td>
-                                        <td>
-                                            <% if (req.status === 'pending') { %>
-                                                <span class="badge bg-warning text-dark">Chờ duyệt</span>
-                                            <% } else if (req.status === 'approved') { %>
-                                                <span class="badge bg-success">Đã duyệt</span>
-                                                <div class="mt-1"><a href="<%= req.pdf_url %>" target="_blank" style="font-size: 0.8rem;">Xem PDF</a></div>
-                                            <% } else { %>
-                                                <span class="badge bg-danger">Từ chối</span>
-                                            <% } %>
-                                        </td>
-                                        <td>
-                                            <% if (req.status === 'pending') { %>
-                                                <button class="btn btn-sm btn-success me-1 btn-action" data-id="<%= req.id %>" data-action="approve">Duyệt</button>
-                                                <button class="btn btn-sm btn-danger btn-action" data-id="<%= req.id %>" data-action="reject">Từ chối</button>
-                                            <% } else { %>
-                                                <span class="text-muted">-</span>
-                                            <% } %>
-                                        </td>
-                                    </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
+<!-- Modal Chi Tiết Yêu Cầu -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="huce-modal-header modal-header">
+                <h5 class="modal-title" id="detailModalLabel">
+                    <i class="bi bi-file-earmark-text me-2"></i>Chi Tiết Yêu Cầu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-4">
+                    <!-- Thông tin sinh viên -->
+                    <div class="col-12">
+                        <p class="modal-section-title">
+                            <i class="bi bi-person-circle me-2"></i>Thông Tin Sinh Viên
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <p class="detail-label">Họ và tên</p>
+                                <p class="detail-value" id="detail-student-name">—</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="detail-label">Mã số sinh viên</p>
+                                <p class="detail-value" id="detail-student-id">—</p>
+                            </div>
+                        </div>
                     </div>
-                <% } %>
+
+                    <!-- Thông tin giấy giới thiệu -->
+                    <div class="col-12">
+                        <p class="modal-section-title">
+                            <i class="bi bi-journal-text me-2"></i>Thông Tin Giấy Giới Thiệu
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <p class="detail-label">Mã yêu cầu</p>
+                                <p class="detail-value" id="detail-id">—</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="detail-label">Loại giấy</p>
+                                <p class="detail-value" id="detail-type">—</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="detail-label">Nơi nhận</p>
+                                <p class="detail-value" id="detail-receiver">—</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="detail-label">Ngày tạo</p>
+                                <p class="detail-value" id="detail-created-at">—</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lý do -->
+                    <div class="col-12">
+                        <p class="modal-section-title">
+                            <i class="bi bi-chat-left-text me-2"></i>Lý Do / Mục Đích
+                        </p>
+                        <div class="detail-content-box" id="detail-content">—</div>
+                    </div>
+
+                    <!-- Trạng thái -->
+                    <div class="col-12">
+                        <p class="detail-label mb-2">Trạng thái hiện tại</p>
+                        <span id="detail-status-badge">—</span>
+                        <div id="detail-pdf-link" class="mt-3 d-none">
+                            <a id="detail-pdf-url" href="#" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>Xem file PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-top">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Tiêu đề + Bảng dữ liệu -->
+<div class="huce-card">
+    <div class="huce-card-header">
+        <h5><i class="bi bi-list-check me-2 text-primary" style="color: var(--huce-primary)!important;"></i>Danh sách yêu cầu</h5>
+        <span class="badge" style="background-color: var(--huce-primary); font-size:0.8rem; padding: 6px 12px; border-radius: 20px;">
+            <%= requests.length %> yêu cầu
+        </span>
+    </div>
+
+    <% if (requests.length === 0) { %>
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <p>Chưa có yêu cầu nào trong hệ thống.</p>
+        </div>
+    <% } else { %>
+        <!-- Toolbar: Search + Filters -->
+        <div class="admin-toolbar">
+            <!-- Ô tìm kiếm -->
+            <div class="toolbar-search">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" placeholder="Tìm theo tên, MSSV, nơi nhận...">
+            </div>
+            
+            <!-- Dropdown lọc trạng thái -->
+            <select id="filterStatus" class="toolbar-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="pending">Chờ duyệt</option>
+                <option value="approved">Đã duyệt</option>
+                <option value="rejected">Từ chối</option>
+            </select>
+            
+            <!-- Dropdown lọc loại giấy -->
+            <select id="filterType" class="toolbar-select">
+                <option value="">Tất cả loại giấy</option>
+                <!-- Rendered by JS -->
+            </select>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table huce-table mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sinh viên</th>
+                        <th>Loại giấy</th>
+                        <th>Nơi nhận</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% requests.forEach(function(req) { %>
+                        <tr>
+                            <td>
+                                <span style="font-size:0.8rem; color: var(--huce-text-muted); font-weight:600;">#<%= req.id %></span>
+                            </td>
+                            <td>
+                                <p class="student-name mb-0"><%= req.student_name %></p>
+                                <p class="student-id mb-0">MSSV: <%= req.student_id %></p>
+                            </td>
+                            <td><%= req.type %></td>
+                            <td style="max-width: 160px;">
+                                <span class="d-inline-block text-truncate" style="max-width: 140px;" title="<%= req.receiver %>">
+                                    <%= req.receiver %>
+                                </span>
+                            </td>
+                            <td><%= new Date(req.created_at).toLocaleDateString('vi-VN') %></td>
+                            <td>
+                                <% if (req.status === 'pending') { %>
+                                    <span class="badge-pending">Chờ duyệt</span>
+                                <% } else if (req.status === 'approved') { %>
+                                    <span class="badge-approved">Đã duyệt</span>
+                                <% } else { %>
+                                    <span class="badge-rejected">Từ chối</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <!-- Nút Xem Chi Tiết -->
+                                    <button class="btn-action-icon btn-outline-info btn-detail"
+                                        title="Xem chi tiết"
+                                        style="color:#0891b2; border-color:#0891b2;"
+                                        data-id="<%= req.id %>"
+                                        data-student-name="<%= req.student_name %>"
+                                        data-student-id="<%= req.student_id %>"
+                                        data-type="<%= req.type %>"
+                                        data-receiver="<%= req.receiver %>"
+                                        data-content="<%= req.content %>"
+                                        data-created-at="<%= new Date(req.created_at).toLocaleDateString('vi-VN') %>"
+                                        data-status="<%= req.status %>"
+                                        data-pdf-url="<%= req.pdf_url || '' %>">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+
+                                    <% if (req.status === 'pending') { %>
+                                        <button class="btn-action-icon btn-action"
+                                            style="color:#059669; border-color:#059669;"
+                                            title="Duyệt yêu cầu"
+                                            data-id="<%= req.id %>" data-action="approve">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                        <button class="btn-action-icon btn-action"
+                                            style="color:#dc2626; border-color:#dc2626;"
+                                            title="Từ chối"
+                                            data-id="<%= req.id %>" data-action="reject">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    <% } else if (req.status === 'approved' && req.pdf_url) { %>
+                                        <a href="<%= req.pdf_url %>" target="_blank"
+                                           class="btn-action-icon"
+                                           style="color:#059669; border-color:#059669;"
+                                           title="Xem PDF">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                        </a>
+                                    <% } else { %>
+                                        <span style="color: var(--huce-text-muted); font-size:0.8rem;">—</span>
+                                    <% } %>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="admin-pagination">
+            <div class="pagination-info">
+                Hiển thị <strong id="pageInfoRange">0-0</strong> / <strong id="pageInfoTotal">0</strong> yêu cầu
+            </div>
+            <div class="pagination-controls">
+                <button id="btnPrevPage" disabled><i class="bi bi-chevron-left"></i></button>
+                <div id="paginationPages" class="pagination-pages">
+                    <!-- Rendered by JS -->
+                </div>
+                <button id="btnNextPage" disabled><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
+    <% } %>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const buttons = document.querySelectorAll('.btn-action');
+        // === SEARCH, FILTER, PAGINATION ===
+        const ROWS_PER_PAGE = 15;
+        let currentPage = 1;
+        const searchInput = document.getElementById('searchInput');
+        const filterStatus = document.getElementById('filterStatus');
+        const filterType = document.getElementById('filterType');
+        const btnPrevPage = document.getElementById('btnPrevPage');
+        const btnNextPage = document.getElementById('btnNextPage');
+        const paginationPages = document.getElementById('paginationPages');
+        const pageInfoRange = document.getElementById('pageInfoRange');
+        const pageInfoTotal = document.getElementById('pageInfoTotal');
+        
+        let allRows = [];
+        
+        if (document.querySelector('.huce-table')) {
+            allRows = Array.from(document.querySelectorAll('.huce-table tbody tr'));
+            
+            // Tự động lấy danh sách "Loại giấy"
+            const uniqueTypes = new Set();
+            allRows.forEach(row => {
+                const typeCell = row.children[2].textContent.trim();
+                if (typeCell) uniqueTypes.add(typeCell);
+            });
+            uniqueTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                if(filterType) filterType.appendChild(option);
+            });
 
-        const triggerPdfDownload = (blob, filename) => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(url);
-        };
+            function getFilteredRows() {
+                const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+                const statusTerm = filterStatus ? filterStatus.value : '';
+                const typeTerm = filterType ? filterType.value : '';
 
-        buttons.forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                const id = e.target.getAttribute('data-id');
-                const action = e.target.getAttribute('data-action');
-                const actionText = action === 'approve' ? 'duyệt' : 'từ chối';
+                return allRows.filter(row => {
+                    const id = row.children[0].textContent.toLowerCase();
+                    const student = row.children[1].textContent.toLowerCase();
+                    const type = row.children[2].textContent.trim();
+                    const receiver = row.children[3].textContent.toLowerCase();
+                    const statusHtml = row.children[5].innerHTML;
+                    
+                    let statusMatch = true;
+                    if (statusTerm === 'pending') statusMatch = statusHtml.includes('badge-pending');
+                    else if (statusTerm === 'approved') statusMatch = statusHtml.includes('badge-approved');
+                    else if (statusTerm === 'rejected') statusMatch = statusHtml.includes('badge-rejected');
+
+                    const typeMatch = typeTerm ? type === typeTerm : true;
+                    const searchMatch = !searchTerm || id.includes(searchTerm) || student.includes(searchTerm) || receiver.includes(searchTerm);
+
+                    return statusMatch && typeMatch && searchMatch;
+                });
+            }
+
+            function renderPaginationButtons(totalPages) {
+                if(!paginationPages) return;
+                paginationPages.innerHTML = '';
                 
-                if (!confirm(`Bạn có chắc chắn muốn ${actionText} yêu cầu #${id}?`)) return;
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, startPage + 4);
+                
+                if (endPage - startPage < 4) {
+                    startPage = Math.max(1, endPage - 4);
+                }
+
+                if (startPage > 1) {
+                    paginationPages.appendChild(createPageBtn(1));
+                    if (startPage > 2) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.className = 'd-inline-flex align-items-center px-1';
+                        ellipsis.textContent = '...';
+                        paginationPages.appendChild(ellipsis);
+                    }
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationPages.appendChild(createPageBtn(i));
+                }
+
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.className = 'd-inline-flex align-items-center px-1';
+                        ellipsis.textContent = '...';
+                        paginationPages.appendChild(ellipsis);
+                    }
+                    paginationPages.appendChild(createPageBtn(totalPages));
+                }
+                
+                if (btnPrevPage) btnPrevPage.disabled = currentPage === 1;
+                if (btnNextPage) btnNextPage.disabled = currentPage === totalPages || totalPages === 0;
+            }
+
+            function createPageBtn(page) {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${page === currentPage ? 'active' : ''}`;
+                btn.textContent = page;
+                btn.addEventListener('click', () => {
+                    currentPage = page;
+                    renderPage();
+                });
+                return btn;
+            }
+
+            function renderPage() {
+                const filteredRows = getFilteredRows();
+                const totalPages = Math.ceil(filteredRows.length / ROWS_PER_PAGE);
+                
+                if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+                else if (totalPages === 0) currentPage = 1;
+
+                const start = (currentPage - 1) * ROWS_PER_PAGE;
+                const end = start + ROWS_PER_PAGE;
+
+                allRows.forEach(row => row.style.display = 'none');
+                filteredRows.slice(start, end).forEach(row => row.style.display = '');
+
+                if(pageInfoRange && pageInfoTotal) {
+                    const startDisp = filteredRows.length > 0 ? start + 1 : 0;
+                    const endDisp = Math.min(end, filteredRows.length);
+                    pageInfoRange.textContent = `${startDisp}-${endDisp}`;
+                    pageInfoTotal.textContent = filteredRows.length;
+                }
+                
+                renderPaginationButtons(totalPages);
+            }
+
+            let debounceTimer;
+            if(searchInput) {
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => { currentPage = 1; renderPage(); }, 300);
+                });
+            }
+
+            if(filterStatus) filterStatus.addEventListener('change', () => { currentPage = 1; renderPage(); });
+            if(filterType) filterType.addEventListener('change', () => { currentPage = 1; renderPage(); });
+
+            if(btnPrevPage) btnPrevPage.addEventListener('click', () => {
+                if (currentPage > 1) { currentPage--; renderPage(); }
+            });
+            if(btnNextPage) btnNextPage.addEventListener('click', () => {
+                const totalPages = Math.ceil(getFilteredRows().length / ROWS_PER_PAGE);
+                if (currentPage < totalPages) { currentPage++; renderPage(); }
+            });
+
+            renderPage();
+        }
+
+        // === XEM CHI TIẾT (Modal) ===
+        const detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+
+        document.querySelectorAll('.btn-detail').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('detail-id').textContent = '#' + btn.dataset.id;
+                document.getElementById('detail-student-name').textContent = btn.dataset.studentName;
+                document.getElementById('detail-student-id').textContent = btn.dataset.studentId;
+                document.getElementById('detail-type').textContent = btn.dataset.type;
+                document.getElementById('detail-receiver').textContent = btn.dataset.receiver;
+                document.getElementById('detail-content').textContent = btn.dataset.content || '(Không có nội dung)';
+                document.getElementById('detail-created-at').textContent = btn.dataset.createdAt;
+
+                const status = btn.dataset.status;
+                const badgeMap = {
+                    pending:  '<span class="badge-pending">Chờ duyệt</span>',
+                    approved: '<span class="badge-approved">Đã duyệt</span>',
+                    rejected: '<span class="badge-rejected">Từ chối</span>'
+                };
+                document.getElementById('detail-status-badge').innerHTML = badgeMap[status] || status;
+
+                const pdfLink = document.getElementById('detail-pdf-link');
+                const pdfUrl = btn.dataset.pdfUrl;
+                if (status === 'approved' && pdfUrl) {
+                    document.getElementById('detail-pdf-url').href = pdfUrl;
+                    pdfLink.classList.remove('d-none');
+                } else {
+                    pdfLink.classList.add('d-none');
+                }
+
+                detailModal.show();
+            });
+        });
+
+        // === DUYỆT / TỪ CHỐI (Toast thay alert) ===
+        document.querySelectorAll('.btn-action').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const currentBtn = e.currentTarget;
+                const id = currentBtn.dataset.id;
+                const action = currentBtn.dataset.action;
+                const actionText = action === 'approve' ? 'duyệt' : 'từ chối';
+
+                const confirmed = await showConfirm(`Bạn có chắc chắn muốn ${actionText} yêu cầu #${id}?`);
+                if (!confirmed) return;
+
+                // Loading state
+                const originalHTML = currentBtn.innerHTML;
+                currentBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                currentBtn.disabled = true;
 
                 try {
                     const res = await fetch(`/admin/requests/${id}/${action}`, {
                         method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
+                        headers: { 'Content-Type': 'application/json' }
                     });
 
                     if (res.ok) {
@@ -107,14 +440,18 @@
                             await res.json();
                         }
 
-                        alert(`Yêu cầu đã được ${actionText} thành công.`);
-                        window.location.reload();
+                        showToast(`Yêu cầu #${id} đã được ${actionText} thành công.`, 'success');
+                        setTimeout(() => window.location.reload(), 1500);
                     } else {
                         const data = await res.json();
-                        alert(data.message || 'Có lỗi xảy ra');
+                        showToast(data.message || 'Có lỗi xảy ra.', 'danger');
+                        currentBtn.innerHTML = originalHTML;
+                        currentBtn.disabled = false;
                     }
                 } catch (err) {
-                    alert('Lỗi kết nối server');
+                    showToast('Lỗi kết nối server. Vui lòng thử lại.', 'danger');
+                    currentBtn.innerHTML = originalHTML;
+                    currentBtn.disabled = false;
                 }
             });
         });

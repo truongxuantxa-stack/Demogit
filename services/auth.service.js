@@ -3,17 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 class AuthService {
-    async register(username, password, full_name) {
-        const existingUser = await userRepository.findByUsername(username);
-        if (existingUser) {
-            throw new Error('Tên đăng nhập đã tồn tại');
-        }
-        
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const userId = await userRepository.create(username, hashedPassword, 'student', full_name);
-        return userId;
-    }
-
     async login(username, password) {
         const user = await userRepository.findByUsername(username);
         if (!user) {

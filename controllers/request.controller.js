@@ -10,7 +10,7 @@ class RequestController {
 
             if (!type || !content || !content.trim() || !receiver || !receiver.trim()) {
                 if (req.accepts('html')) {
-                    return res.render('create-request', { user: req.user, error: 'Vui lòng điền đầy đủ thông tin (không để trống hoặc chỉ nhập dấu cách).' });
+                    return res.render('create-request', { user: req.user, error: 'Vui lòng điền đầy đủ thông tin (không để trống hoặc chỉ nhập dấu cách).', pageTitle: 'Tạo Yêu Cầu Mới', breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Lịch sử', href: '/dashboard' }, { label: 'Tạo yêu cầu mới' }] });
                 }
                 return res.status(400).json({ message: 'All fields are required and cannot be empty' });
             }
@@ -23,7 +23,7 @@ class RequestController {
             res.status(201).json({ message: 'Request created successfully' });
         } catch (error) {
             if (req.accepts('html')) {
-                return res.render('create-request', { user: req.user, error: error.message });
+                return res.render('create-request', { user: req.user, error: error.message, pageTitle: 'Tạo Yêu Cầu Mới', breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Lịch sử', href: '/dashboard' }, { label: 'Tạo yêu cầu mới' }] });
             }
             res.status(400).json({ message: error.message });
         }
@@ -35,7 +35,7 @@ class RequestController {
             const requests = await requestService.getStudentRequests(userId);
             
             if (req.accepts('html')) {
-                return res.render('list-requests', { user: req.user, requests });
+                return res.render('list-requests', { user: req.user, requests, pageTitle: 'Danh Sách Giấy Giới Thiệu', breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Lịch sử xin giấy' }] });
             }
             res.status(200).json(requests);
         } catch (error) {
@@ -69,7 +69,7 @@ class RequestController {
             const requests = await requestService.getAllRequests();
             
             if (req.accepts('html')) {
-                return res.render('admin-dashboard', { user: req.user, requests });
+                return res.render('admin-dashboard', { user: req.user, requests, pageTitle: 'Quản Lý Yêu Cầu', breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Quản lý yêu cầu' }] });
             }
             res.status(200).json(requests);
         } catch (error) {

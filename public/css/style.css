@@ -1,0 +1,966 @@
+/* ==========================================================
+   HUCE Student Recommendation System - Shared Stylesheet
+   Nguồn duy nhất cho Design Tokens, Override Bootstrap, Styles
+   ========================================================== */
+
+/* ===== 1. Google Fonts ===== */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
+
+/* ===== 2. CSS Custom Properties (Design Tokens HUCE) ===== */
+:root {
+  --huce-primary: #103f91;
+  --huce-primary-dark: #0c2d6b;
+  --huce-primary-light: #1a56c4;
+  --huce-accent: #f59d1a;
+  --huce-red: #c32128;
+  --huce-bg: #f4f6f9;
+  --huce-card-bg: #ffffff;
+  --huce-text: #2d3748;
+  --huce-text-muted: #718096;
+  --huce-border: #eaecf0;
+  --huce-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --huce-shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
+  --huce-radius: 8px;
+  --huce-radius-lg: 12px;
+  --huce-transition: 0.2s ease;
+  --navbar-height: 56px;
+}
+
+/* ===== 3. Base Styles ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background-color: var(--huce-bg);
+  color: var(--huce-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== 4. Bootstrap Overrides ===== */
+
+/* Primary color → HUCE Blue */
+.btn-primary {
+  background-color: var(--huce-primary);
+  border-color: var(--huce-primary);
+  font-weight: 500;
+  transition: background-color var(--huce-transition), border-color var(--huce-transition), box-shadow var(--huce-transition);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--huce-primary-dark);
+  border-color: var(--huce-primary-dark);
+  box-shadow: 0 0 0 0.25rem rgba(16, 63, 145, 0.25);
+}
+.btn-primary:active {
+  background-color: var(--huce-primary-dark) !important;
+  border-color: var(--huce-primary-dark) !important;
+}
+
+/* Outline primary */
+.btn-outline-primary {
+  color: var(--huce-primary);
+  border-color: var(--huce-primary);
+}
+.btn-outline-primary:hover {
+  background-color: var(--huce-primary);
+  border-color: var(--huce-primary);
+}
+
+/* Form focus ring */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--huce-primary-light);
+  box-shadow: 0 0 0 0.2rem rgba(16, 63, 145, 0.2);
+}
+
+/* ===== 5. Navbar ===== */
+.huce-navbar {
+  background-color: var(--huce-card-bg);
+  border-bottom: 1px solid var(--huce-border);
+  height: var(--navbar-height);
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  box-shadow: var(--huce-shadow-md);
+}
+
+.huce-navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 0;
+}
+
+.huce-navbar .huce-logo-full {
+  height: 52px;
+  width: 320px; /* Chiều rộng cố định để chứa phần logo và tên trường */
+  object-fit: cover; /* Cắt phần thừa (Hotline/Email) của ảnh */
+  object-position: left center; /* Ưu tiên hiển thị góc trái ảnh */
+}
+
+/* Nav links */
+.huce-navbar .nav-link {
+  color: var(--huce-text-muted);
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: 6px;
+  transition: color var(--huce-transition), background-color var(--huce-transition);
+  white-space: nowrap;
+}
+
+.huce-navbar .nav-link:hover {
+  color: var(--huce-primary);
+  background-color: rgba(16, 63, 145, 0.06);
+}
+
+.huce-navbar .nav-link.active {
+  color: var(--huce-primary);
+  background-color: rgba(16, 63, 145, 0.1);
+  font-weight: 600;
+}
+
+.huce-navbar .nav-link i {
+  margin-right: 5px;
+}
+
+/* User profile in Navbar */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--huce-accent);
+  object-fit: cover;
+}
+
+.navbar-user-info .user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--huce-primary);
+  margin: 0;
+  line-height: 1.2;
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.navbar-user-info .user-role {
+  font-size: 0.72rem;
+  color: var(--huce-text-muted);
+  margin: 0;
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-logout {
+  background: none;
+  border: none;
+  color: var(--huce-text-muted);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--huce-transition);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-logout:hover {
+  color: var(--huce-red);
+  background-color: rgba(195, 33, 40, 0.08);
+}
+
+/* Mobile hamburger */
+.navbar-toggler {
+  border: 1px solid var(--huce-border);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.15rem rgba(16, 63, 145, 0.2);
+}
+
+/* ===== 6. Sub-header / Page Header ===== */
+.page-subheader {
+  background-color: var(--huce-card-bg);
+  border-bottom: 1px solid var(--huce-border);
+  padding: 10px 0;
+}
+
+.page-subheader .breadcrumb {
+  margin-bottom: 4px;
+  font-size: 0.78rem;
+}
+
+.page-subheader .breadcrumb-item a {
+  color: var(--huce-primary);
+  text-decoration: none;
+}
+
+.page-subheader .breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+.page-subheader .breadcrumb-item.active {
+  color: var(--huce-text-muted);
+}
+
+.page-subheader .breadcrumb-item + .breadcrumb-item::before {
+  color: var(--huce-text-muted);
+}
+
+.page-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--huce-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ===== 7. Main Content ===== */
+.main-content {
+  padding: 20px 0 50px;
+}
+
+/* ===== 8. Cards ===== */
+.huce-card {
+  background-color: var(--huce-card-bg);
+  border: 1px solid var(--huce-border);
+  border-radius: var(--huce-radius-lg);
+  box-shadow: var(--huce-shadow);
+  overflow: hidden;
+  transition: box-shadow 0.25s ease;
+}
+
+.huce-card:hover {
+  box-shadow: var(--huce-shadow-md);
+}
+
+.huce-card-header {
+  background-color: #fafbff;
+  border-bottom: 1px solid var(--huce-border);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.huce-card-header h5,
+.huce-card-header h4 {
+  font-weight: 600;
+  color: var(--huce-text);
+  margin: 0;
+}
+
+/* ===== 9. Table Enhancements ===== */
+.huce-table {
+  margin-bottom: 0;
+  font-size: 0.875rem;
+}
+
+.huce-table thead th {
+  background-color: #f5f7ff;
+  color: var(--huce-text-muted);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1.5px solid #dde3f0;
+  padding: 12px 16px;
+  white-space: nowrap;
+}
+
+.huce-table tbody td {
+  padding: 13px 16px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f2f7;
+  color: var(--huce-text);
+  transition: background-color 0.15s ease;
+}
+
+.huce-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.huce-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.huce-table tbody tr:hover td {
+  background-color: #f0f4ff;
+}
+
+.huce-table .student-name {
+  font-weight: 600;
+  color: var(--huce-text);
+  margin-bottom: 2px;
+}
+
+.huce-table .student-id {
+  font-size: 0.78rem;
+  color: var(--huce-text-muted);
+}
+
+/* ===== 10. Badges ===== */
+.badge-pending {
+  background-color: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  font-weight: 600;
+  font-size: 0.74rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.badge-pending::before {
+  content: "⏳";
+}
+
+.badge-approved {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+  font-weight: 600;
+  font-size: 0.74rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.badge-approved::before {
+  content: "✓";
+  font-weight: 800;
+}
+
+.badge-rejected {
+  background-color: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fca5a5;
+  font-weight: 600;
+  font-size: 0.74rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.badge-rejected::before {
+  content: "✕";
+  font-weight: 800;
+}
+
+/* ===== 11. Action Buttons in Table ===== */
+.btn-action-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  border: 1px solid;
+  transition: all var(--huce-transition);
+  text-decoration: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.btn-action-icon:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  opacity: 0.9;
+}
+
+/* ===== 12. Modal ===== */
+.huce-modal-header {
+  background-color: var(--huce-primary);
+  color: #fff;
+  padding: 16px 20px;
+}
+
+.huce-modal-header .modal-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.huce-modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.modal-section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--huce-primary);
+  border-bottom: 2px solid rgba(16, 63, 145, 0.15);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  color: var(--huce-text-muted);
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: var(--huce-text);
+  font-size: 0.9rem;
+}
+
+.detail-content-box {
+  background-color: var(--huce-bg);
+  border: 1px solid var(--huce-border);
+  border-radius: var(--huce-radius);
+  padding: 12px 14px;
+  font-size: 0.875rem;
+  min-height: 80px;
+  white-space: pre-line;
+  color: var(--huce-text);
+}
+
+/* ===== 13. Toast Notifications ===== */
+.toast-stack {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1090;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 300px;
+  max-width: 380px;
+}
+
+.huce-toast {
+  background: var(--huce-card-bg);
+  border-radius: var(--huce-radius);
+  box-shadow: var(--huce-shadow-md);
+  border-left: 4px solid;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.huce-toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.huce-toast.hiding {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.huce-toast.toast-success { border-left-color: #34d399; }
+.huce-toast.toast-danger  { border-left-color: #f87171; }
+.huce-toast.toast-warning { border-left-color: #fbbf24; }
+.huce-toast.toast-info    { border-left-color: var(--huce-primary-light); }
+
+.toast-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.toast-success .toast-icon { color: #059669; }
+.toast-danger  .toast-icon { color: #dc2626; }
+.toast-warning .toast-icon { color: #d97706; }
+.toast-info    .toast-icon { color: var(--huce-primary); }
+
+.toast-message {
+  font-size: 0.875rem;
+  color: var(--huce-text);
+  flex: 1;
+  line-height: 1.45;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: var(--huce-text-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.toast-close:hover {
+  color: var(--huce-text);
+}
+
+/* ===== 14. Confirm Modal ===== */
+#confirmModal .modal-header {
+  background-color: #fff8ed;
+  border-bottom: 1px solid #fde68a;
+}
+
+#confirmModal .modal-title {
+  color: #92400e;
+  font-weight: 600;
+}
+
+/* ===== 15. Footer ===== */
+.huce-footer {
+  background-color: var(--huce-card-bg);
+  border-top: 1px solid var(--huce-border);
+  color: var(--huce-text-muted);
+  padding: 16px 0;
+  font-size: 0.8rem;
+  margin-top: auto;
+}
+
+.huce-footer a {
+  color: var(--huce-text-muted);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.huce-footer a:hover {
+  color: var(--huce-primary);
+  text-decoration: underline;
+}
+
+.huce-footer .footer-divider {
+  color: var(--huce-border);
+  margin: 0 8px;
+}
+
+.text-accent {
+  color: var(--huce-accent);
+}
+
+/* ===== 16. Login Page (Standalone) ===== */
+.login-page {
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.login-left {
+  flex: 1;
+  position: relative;
+  background-color: var(--huce-primary);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.login-bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.login-left-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(16, 63, 145, 0.25) 0%,
+    rgba(12, 45, 107, 0.85) 100%
+  );
+}
+
+.login-left-content {
+  position: relative;
+  z-index: 2;
+  padding: 32px 36px;
+}
+
+.login-left-content .system-label {
+  display: inline-block;
+  background-color: var(--huce-accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+
+.login-left-content h1 {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.login-left-content .slogan {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.88rem;
+  font-style: italic;
+  margin-bottom: 0;
+}
+
+.login-right {
+  width: 420px;
+  flex-shrink: 0;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 40px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.login-logo {
+  max-height: 64px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+.login-school-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--huce-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+
+.login-system-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--huce-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+.login-form-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--huce-text);
+  margin-bottom: 4px;
+}
+
+.login-form-subtitle {
+  font-size: 0.82rem;
+  color: var(--huce-text-muted);
+  margin-bottom: 20px;
+}
+
+.login-right .form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--huce-text);
+  margin-bottom: 4px;
+}
+
+.login-right .form-control {
+  border-radius: 8px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--huce-border);
+  font-size: 0.9rem;
+  transition: border-color var(--huce-transition), box-shadow var(--huce-transition);
+}
+
+.login-right .input-group-text {
+  border: 1.5px solid var(--huce-border);
+  background-color: #f8fafc;
+  color: var(--huce-text-muted);
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+}
+
+.login-right .input-group .form-control {
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+}
+
+.login-right .input-group:focus-within .input-group-text {
+  border-color: var(--huce-primary-light);
+  color: var(--huce-primary);
+}
+
+.btn-login {
+  background-color: var(--huce-primary);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+  transition: background-color var(--huce-transition), transform 0.1s ease;
+  margin-top: 4px;
+}
+
+.btn-login:hover {
+  background-color: var(--huce-primary-dark);
+  color: #fff;
+}
+
+.btn-login:active {
+  transform: scale(0.99);
+}
+
+.login-footer-note {
+  font-size: 0.73rem;
+  color: var(--huce-text-muted);
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* Hỗ trợ kỹ thuật - Support box */
+.login-support-box {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--huce-border);
+}
+
+.login-support-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--huce-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+.login-support-contacts {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.login-support-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--huce-text);
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--huce-border);
+  transition: all var(--huce-transition);
+}
+
+.login-support-item:hover {
+  border-color: var(--huce-primary);
+  color: var(--huce-primary);
+  background-color: rgba(16, 63, 145, 0.04);
+}
+
+.login-support-item i {
+  color: var(--huce-primary);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* ===== 17. Empty State ===== */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--huce-text-muted);
+}
+
+.empty-state i {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  color: var(--huce-border);
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ===== 17.5. Admin Dashboard Enhancements ===== */
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--huce-border);
+  background-color: #fff;
+}
+
+.toolbar-search {
+  position: relative;
+  flex: 1;
+  min-width: 250px;
+}
+
+.toolbar-search i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--huce-text-muted);
+}
+
+.toolbar-search input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border: 1px solid var(--huce-border);
+  border-radius: var(--huce-radius);
+  font-size: 0.875rem;
+  transition: all var(--huce-transition);
+}
+
+.toolbar-search input:focus {
+  outline: none;
+  border-color: var(--huce-primary-light);
+  box-shadow: 0 0 0 0.2rem rgba(16, 63, 145, 0.1);
+}
+
+.toolbar-select {
+  padding: 8px 32px 8px 12px;
+  border: 1px solid var(--huce-border);
+  border-radius: var(--huce-radius);
+  font-size: 0.875rem;
+  color: var(--huce-text);
+  background-color: #fff;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23718096%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 10px auto;
+  transition: all var(--huce-transition);
+}
+
+.toolbar-select:focus {
+  outline: none;
+  border-color: var(--huce-primary-light);
+  box-shadow: 0 0 0 0.2rem rgba(16, 63, 145, 0.1);
+}
+
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid var(--huce-border);
+  background-color: #fff;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  color: var(--huce-text-muted);
+}
+
+.pagination-info strong {
+  color: var(--huce-text);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pagination-controls button,
+.pagination-pages .page-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid var(--huce-border);
+  border-radius: var(--huce-radius);
+  color: var(--huce-text);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--huce-transition);
+}
+
+.pagination-controls button:hover:not(:disabled),
+.pagination-pages .page-btn:hover:not(.active) {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f8fafc;
+}
+
+.pagination-pages .page-btn.active {
+  background-color: var(--huce-primary);
+  border-color: var(--huce-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 4px;
+}
+
+/* ===== 18. Responsive ===== */
+@media (max-width: 991.98px) {
+  .huce-navbar {
+    height: auto;
+    padding: 10px 16px;
+  }
+
+  .login-right {
+    width: 100%;
+    padding: 40px 28px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* Login: ẩn nửa trái */
+  .login-left {
+    display: none;
+  }
+
+  .login-right {
+    padding: 32px 24px;
+  }
+
+  .page-title {
+    font-size: 1.1rem;
+  }
+}
