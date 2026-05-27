@@ -132,8 +132,11 @@
     // Loading state khi submit
     document.getElementById('loginForm').addEventListener('submit', function() {
         const btn = document.getElementById('loginBtn');
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang đăng nhập...';
-        btn.disabled = true;
+        // Sử dụng setTimeout để đảm bảo form được trình duyệt gửi đi TRƯỚC khi nút bấm bị vô hiệu hóa
+        setTimeout(() => {
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang đăng nhập...';
+            btn.disabled = true;
+        }, 0);
     });
 </script>
 </body>
