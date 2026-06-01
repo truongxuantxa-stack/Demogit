@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const routes = require('./routes');
+const pool = require('./config/db');
 
 const app = express();
 
@@ -29,8 +30,14 @@ app.use((req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    try {
+        await pool.query('SELECT 1');
+        console.log('✅ MySQL pool warmed up successfully');
+    } catch (err) {
+        console.error('❌ MySQL pool warm-up failed:', err.message);
+    }
 });
 
 // trigger restart
